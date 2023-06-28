@@ -52,7 +52,10 @@ app.use((req, res, next) => {
   next();
 });
 app.use((req, res, next) => {
-  req.headers["Authorization"] = `Bearer ${process.env.JWT_SECRET_KEY}`;
+  // req.headers["Authorization"] = `Bearer ${process.env.JWT_SECRET_KEY}`;
+  // req.headers["Authorization"] = {
+  //   result: true,
+  // };
   next();
 });
 

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { isLoggedIn, isNotLoggedIn, verifyToken } = require("../middlewares");
+const passport = require("passport");
 
 const {
   renderMain,
@@ -29,13 +30,20 @@ router.use((req, res, next) => {
   // req.user를 통해 암호화된 password 등 불필요한 정보가
   // 브라우저에 유출되지 않도록
   // 필요한 정보만 저장하는 방식으로 변경할 필요성이 있음
-  res.locals.user = req.user;
-  res.locals.likedPostList = req.user?.Likes?.map((f) => f.PostId) || [];
   next();
 });
 
+// 추후 로그인 필요한 부분에만 추가하기
+router.use(verifyToken);
+
+// 추가해야 하는 기능
+// 토큰 만료 전 자동 재발급
+// refreshToken
+//
+
 // 메인 페이지
-router.get("/", verifyToken, renderMain);
+router.get("/", renderMain);
+// router.get("/", passport.authenticate("jwt", { session: false }), renderMain);
 
 // 로그인 페이지
 router.get("/page/login", renderLogin);
@@ -45,7 +53,7 @@ router.post("/page/login", renderLogin);
 router.get("/page/join", renderJoin);
 
 // 공지사항 페이지
-router.get("/page/notice", renderNotice);
+router.get("/page/notice", verifyToken, renderNotice);
 
 // 정보제공 페이지
 router.get("/page/info", renderInfo);

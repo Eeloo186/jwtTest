@@ -1,4 +1,5 @@
 const passport = require("passport");
+const generateToken = require("../utils/generateToken");
 
 exports.isLoggedIn = (req, res, next) => {
   if (req.isAuthenticated()) {
@@ -24,13 +25,31 @@ exports.isAdmin = (req, res, next) => {
 exports.isNotAdmin = (req, res, next) => {};
 
 exports.verifyToken = (req, res, next) => {
-  console.log(req.headers);
-  console.log("--- 쿠키 검증 진입");
-  console.log(req.cookies);
-  passport.authenticate("jwt", { sessions: false }, (error, user) => {
-    console.log(error);
-    console.log(user);
-    console.log("--- 쿠키 검증 끝");
-    next();
+  req.headers["Authorization"] = `${req.cookies["access_token"]}`;
+  passport.authenticate("jwt", { sessions: false }, (error, user, id) => {
+    console.log(`::::::::::::::::>>>>>>>>>>>> ${error}`);
+    console.log(`::::::::::::::::>>>>>>>>>>>>`, id);
+    if (id) {
+      res.clearCookie("access_token");
+      res.cookie("access_token", generateToken(id), {
+        maxAge: 1000 * 60 * 60,
+        httpOnly: true,
+      });
+    }
+    // console.log("-----------------------1--------------------------");
+    // console.log("-----------------------2--------------------------");
+    // console.log("-----------------------3--------------------------");
+    // console.log(error);
+    // console.log(user);
+    // console.log("-----------------------4--------------------------");
+    // console.log("-----------------------5--------------------------");
+    // console.log("-----------------------6--------------------------");
+    res.locals.user = req.user = user;
+    res.locals.likedPostList = req.user?.Likes?.map((f) => f.PostId) || [];
+    if (req.user) {
+      next();
+    } else {
+      res.redirect("/page/login");
+    }
   })(req, res, next);
 };

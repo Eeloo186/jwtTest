@@ -3,6 +3,7 @@ const passport = require("passport");
 const { User, Pet } = require("../models");
 const { isLoggedIn, isNotLoggedIn } = require("../middlewares");
 const jwt = require("jsonwebtoken");
+const generateToken = require("../utils/generateToken");
 
 exports.join = async (req, res, next) => {
   const { userId, password, nickname, email, address1, address2, address3, provider, pet, petName, petType, petKind, petAge, petEtc } = req.body;
@@ -47,32 +48,26 @@ exports.login = (req, res, next) => {
       console.error("없는 아이디입니다.");
       return res.status(401).send(`<script>alert('아이디가 없거나 비밀번호가 잘못되었습니다.');history.back();</script>`);
     }
+    // 로그인 성공처리
     // jwt 토큰 발급
-    const token = jwt.sign(
-      {
-        id: "testId",
-        nick: "testNick",
-      },
-      process.env.JWT_SECRET_KEY,
-      {
-        expiresIn: "7d",
-      }
-    );
-    console.log(`token : ${token}`);
-    res.cookie("test_token", token, {
+    const token = generateToken(user.id);
+    console.log(`token :::::::::>> ${token}`);
+    res.cookie("access_token", token, {
       maxAge: 1000 * 60 * 60,
+      httpOnly: true,
     });
+    return res.redirect("/");
     // return res.json({ code: 200, message: "테스트 토큰 발급", token });
 
     // req.login
-    return req.login(user, (loginError) => {
-      if (loginError) {
-        console.error(loginError);
-        return next(loginError);
-      }
+    // return req.login(user, (loginError) => {
+    //   if (loginError) {
+    //     console.error(loginError);
+    //     return next(loginError);
+    //   }
 
-      return res.redirect("/");
-    });
+    //   return res.redirect("/");
+    // });
   })(req, res, next); // 미들웨어 내의 미들웨어에는 (req, res, next)를 붙입니다.
 };
 
