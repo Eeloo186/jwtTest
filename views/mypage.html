@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    {% include 'head.html' %}
+    <link rel="stylesheet" href="/styles/mypage.css" />
+    <script src="javascript/mypage.js" defer></script>
+  </head>
+  <body>
+    {% include 'top.html' %}
+    <div class="mypage-box">
+      <!-- <h2>마이페이지</h2>
+      <div class="user-info">
+        <h3>{{user.nickname}}님</h3>
+        <p>이메일: {{user.email}}</p>
+        <p>주소: {{user.address2}} {{user.address3}}</p>
+        <p>가입일: {{user.createdAt}}</p>
+        <p>작성한 게시글 수 : {{postCount}}</p>
+        <p>작성한 댓글 수 : {{commentCount}}</p>
+      </div> -->
+      <div class="user-profile">
+        <h2>마이페이지</h2>
+        <div class="user-info">
+          <h3>{{user.nickname}}님</h3>
+          <p>이메일: {{user.email}}</p>
+          <p>주소: {{user.address2}} {{user.address3}}</p>
+          <p>가입일: {{user.createdAt}}</p>
+        </div>
+        <div class="user-activity">
+          <h3>활동 정보</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>게시글 수</th>
+                <th>댓글 수</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{postCount}}</td>
+                <td>{{commentCount}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- <div class="half">
+            <div>팔로잉</div>
+            <div class="count following-count">{{followingCount}}</div>
+        </div>
+        <div class="half">
+            <div>팔로워</div>
+            <div class="count follower-count">{{followerCount}}</div>
+        </div> -->
+      <div class="timeline">
+        <div>
+          <a href="#" id="mypostBtn" class="btn">내가 작성한 글보기</a>
+          <a href="/page/users/{{user.id}}" id="modify" class="btn">회원정보수정</a>
+        </div>
+      </div>
+      <!-- 첫 실행 체크용 변수 저장 -->
+      <input type="hidden" value="0" id="check-first" />
+      <!-- 작성글 리스트 -->
+      <div id="post-list-div">
+        <ul id="post-list"></ul>
+      </div>
+    </div>
+  </body>
+  <script>
+    const mypostButton = document.getElementById("mypostBtn");
+    mypostButton.addEventListener("click", async () => {
+      const postList = document.getElementById("post-list");
+      if (!parseInt(document.getElementById("check-first").value, 10)) {
+        document.getElementById("check-first").value = 1;
+        await axios
+          .get("/users/{{user.id}}/posts")
+          .then((res) => {
+            // 작성글 목록 얻어옴
+            const posts = res.data.posts;
+
+            // 요소에 작성글 목록 추가
+            posts.forEach((post) => {
+              const postInfo = document.createElement("li");
+              postInfo.style.listStyle = "none";
+              postInfo.innerHTML = `
+          <div class='li-box'>
+            <div class='title-box'>
+              <div>제목: ${post.title}</div>
+            </div>
+            <div class='info-box'>
+              <div><span>${post.User.nickname}(${post.User.userId})</span> <span>${post.createdAt}<span></div>
+            </div>
+            <div class='content-box'>
+              ${post.Content.content}
+            </div>
+          <div>`;
+              postList.appendChild(postInfo);
+            });
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+        // 작성글 목록 show 처리
+        postList.style.display = "block";
+      } else {
+        // 작성글 목록 show/hide 처리
+        if (postList.style.display === "block") {
+          postList.style.display = "none";
+        } else {
+          postList.style.display = "block";
+        }
+      }
+    });
+  </script>
+</html>

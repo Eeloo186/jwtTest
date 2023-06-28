@@ -1,0 +1,313 @@
+.join-event-box {
+  width: 100%;
+  height: 586px;
+  margin: 0 auto;
+  margin-bottom: 30px;
+  padding: 200px 0 200px;
+  text-align: center;
+  font-size: 40px;
+  box-shadow: 0 4px 6px -6px #000000;
+  background-image: url("/imgs/pet join.png");
+  background-repeat: no-repeat;
+  background-position: 10% 100%;
+  color: rgb(255, 166, 0);
+}
+
+.join-event-box span {
+  font-size: 80px;
+  text-shadow: 0 0 3px rgb(255, 238, 164);
+}
+
+.uni {
+  color: rgb(255, 98, 19);
+  font-size: 60px;
+}
+
+.join-event-box p {
+  padding-bottom: 20px;
+}
+
+.join-event-box a {
+  border: 3px solid rgb(255, 125, 60);
+  padding: 10px 40px;
+  font-size: 40px;
+  border-radius: 20px;
+  color: rgb(255, 125, 60);
+  text-transform: uppercase;
+}
+
+.join-event-box a:hover {
+  border: 2px solid rgb(162, 94, 60);
+  color: rgb(162, 94, 60);
+}
+
+.community-event-box {
+  width: 100%;
+  height: 586px;
+  margin: 0 auto;
+  margin-bottom: 30px;
+  padding: 200px 0 200px;
+  text-align: center;
+  font-size: 40px;
+  box-shadow: 0 3px 6px -6px #000000;
+  background-image: url("/imgs/pet.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: 100%;
+}
+
+.royal-canin {
+  width: 100%;
+  height: 586px;
+  margin: 0 auto;
+  margin-bottom: 30px;
+  padding: 200px 0 200px;
+  text-align: center;
+  box-shadow: 0 3px 6px -6px #000000;
+  background-image: url("/imgs/royal.jpg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: 100%;
+}
+
+.community-event-box p {
+  position: relative;
+}
+
+.community-event-box p::before {
+  content: url("/imgs/eventpage.png");
+  position: absolute;
+  top: 40px;
+  left: 31%;
+}
+
+.community-event-box span {
+  font-size: 60px;
+  text-shadow: 0 0 3px rgb(255, 238, 164);
+  color: rgb(179, 132, 255);
+}
+
+.community-event-box a {
+  border: 3px solid rgb(179, 132, 255);
+  padding: 10px 40px;
+  font-size: 40px;
+  border-radius: 20px;
+  color: rgb(179, 132, 255);
+}
+
+.community-event-box a:hover {
+  border: 2px solid rgb(150, 0, 188);
+  color: rgb(150, 0, 188);
+}
+
+.community-event-box p {
+  padding-bottom: 20px;
+}
+
+.royal-canin img {
+  width: 800px;
+  height: 500px;
+  object-fit: contain;
+  padding: 100px 100px;
+}
+
+.pet-protection {
+  width: 100%;
+  height: 586px;
+  margin: 0 auto;
+  margin-bottom: 30px;
+  padding: 200px 0 200px;
+  text-align: center;
+  box-shadow: 0 3px 6px -6px #000000;
+  background-image: url("/imgs/petprotection.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: 50%;
+}
+
+.main-box {
+  width: 60%;
+  margin: 0px auto;
+  display: flex;
+  justify-content: center;
+  padding: 5px 20px;
+  border: 4px solid rgb(203, 203, 203);
+  border-radius: 20px;
+}
+
+.main-box div {
+  height: 100px;
+  line-height: 70px;
+  border: 5px solid rgb(203, 203, 203);
+  border-radius: 20px;
+  text-align: center;
+  padding: 20px;
+  margin: 5px 10px;
+}
+
+.fas {
+  font-size: 50px;
+  font-weight: bold;
+  color: rgb(173, 173, 173);
+}
+
+.post {
+  width: 230px;
+  height: 150px;
+  display: inline-block;
+  border: 5px solid powderblue;
+  border-radius: 20px;
+  margin: 5px;
+}
+
+.post-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/*  지도  */
+.wrap {
+  position: absolute;
+  left: 0;
+  bottom: 55px;
+  width: auto;
+  height: 110px;
+  margin-left: -97px;
+  text-align: left;
+  font-size: 12px;
+  font-family: "Malgun Gothic", dotum, "돋움", sans-serif;
+  line-height: 1.5;
+}
+.wrap * {
+  padding: 0;
+  margin: 0;
+}
+.wrap .infomation {
+  width: 200px;
+  height: auto;
+  min-height: 100px;
+  max-height: 120px;
+  border-radius: 5px;
+  background: #fff;
+  position: relative;
+}
+.wrap .infomation:nth-child(1) {
+  border: 0;
+  box-shadow: 0px 1px 2px #888;
+}
+.infomation .title {
+  width: 200px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 30px;
+  max-height: 50px;
+  padding: 3px 0px 3px 20px;
+  background: hsl(0, 0%, 100%);
+  border-bottom: 1px solid #ddd;
+  font-weight: bold;
+}
+.infomation .title p {
+  width: 150px;
+  white-space: normal;
+  word-break: keep-all;
+}
+.infomation .close {
+  margin-left: 20px;
+  margin: 10px;
+  color: #888;
+  width: 10px;
+  height: 10px;
+  background: url("https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png");
+  background-size: cover;
+  border: none;
+}
+.infomation .close:hover {
+  cursor: pointer;
+}
+
+.desc .ellipsis {
+  width: 80%;
+  white-space: normal;
+  word-break: keep-all;
+  padding: 10px 20px;
+}
+.infomation:after {
+  content: "";
+  position: absolute;
+  margin-left: -12px;
+  top: 100%;
+  left: 50%;
+  width: 22px;
+  height: 12px;
+  background: url("https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png");
+}
+
+#map {
+  width: 1000px;
+  height: 400px;
+  border-radius: 20px;
+  margin: 0 auto;
+}
+
+.displaymap {
+  margin: 20px;
+}
+
+.hidenMap {
+  position: absolute;
+  left: -100%;
+}
+
+.pet-hospital {
+  cursor: pointer;
+}
+
+.dogBtn {
+  cursor: pointer;
+}
+
+.catBtn {
+  cursor: pointer;
+}
+
+.dogitem {
+  margin: 40px auto;
+  border: 1px solid rgb(173, 173, 173);
+  border-radius: 20px;
+}
+
+.dogitem ul {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+}
+
+.dogitem ul li img {
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+  padding: 10px;
+  border-radius: 50px;
+}
+
+.catitem {
+  margin: 40px auto;
+  border: 1px solid rgb(173, 173, 173);
+  border-radius: 20px;
+}
+
+.catitem ul {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+}
+
+.catitem ul li img {
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+  padding: 10px;
+  border-radius: 50px;
+}

@@ -1,0 +1,169 @@
+* {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #ffffff;
+}
+
+/* 회원가입 페이지 */
+
+#content-box {
+  width: auto;
+  max-width: 500px;
+  height: auto;
+  border: 1px solid rgb(151, 151, 151);
+  margin: 10% auto;
+  background-color: #ffffff;
+  padding: 50px 20px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  position: relative;
+}
+
+#content-box p {
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center;
+  padding: 10px;
+  margin: 20px 0 20px 0;
+}
+
+#content-box form ul li {
+  padding: 5px 10px 0px 10px;
+}
+
+#content-box label {
+  display: block;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 0 0 5px 0;
+}
+
+.list {
+  width: 400px;
+  display: block;
+  margin: 0 auto;
+}
+
+.input-style {
+  width: 400px;
+  padding: 12px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  background-color: rgb(255, 255, 255);
+  margin: 5px auto;
+  border: 1px solid rgb(189, 189, 189);
+}
+
+.essential {
+  color: red;
+}
+
+#confirm {
+  font-size: 10px;
+  margin-left: 40px;
+}
+
+.confirm-box {
+  font-size: 12px;
+  margin-left: 25px;
+}
+
+.address-btn {
+  background-color: rgb(128, 0, 255);
+  color: #ffffff;
+  font-weight: bold;
+  border: none;
+}
+
+.address-btn:hover {
+  background-color: rgb(92, 0, 185);
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.existenceN {
+  color: red;
+  border: 2px solid red;
+  outline: red;
+}
+
+.existenceY {
+  color: green;
+  border: 2px solid green;
+  outline: green;
+}
+
+/* 펫 정보 페이지 */
+
+.petCheck {
+  margin-right: 10px;
+}
+
+#pet-information {
+  width: 350px;
+  position: absolute;
+  background-color: rgb(255, 255, 255);
+  border-radius: 12px;
+  top: 0%;
+  left: 0%;
+  transition: all ease 0.5s 0s;
+  opacity: 0;
+  z-index: -1;
+  border: 1px solid rgb(151, 151, 151);
+}
+
+#pet-information h4 {
+  text-align: center;
+  padding: 10px;
+  background-color: rgb(132, 1, 255);
+  border-radius: 12px 12px 0 0;
+  color: white;
+}
+
+.pet-list {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+.pet-list li {
+  width: 320px;
+  margin: 0 auto;
+}
+
+.petInput {
+  width: 300px;
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  background-color: rgb(255, 255, 255);
+  margin: 5px auto;
+  border: 1px solid rgb(189, 189, 189);
+}
+
+/* 가입버튼 */
+
+#join-content {
+  text-align: center;
+}
+
+#join-content button {
+  width: 400px;
+  padding: 15px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  background-color: rgb(128, 0, 255);
+  border: none;
+  color: #ffffff;
+  margin: 30px auto 5px;
+  font-weight: bold;
+}
+
+#join-content button:hover {
+  background-color: rgb(76, 0, 191);
+}

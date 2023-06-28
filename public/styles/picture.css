@@ -1,0 +1,65 @@
+.container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.picture-box {
+    width:250px;
+    height:250px ;
+  padding-bottom: 26.67%; /* 3:4 비율 */
+  margin: 2.5% 2.5%;
+  position: relative;
+  background-size:contain;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-color: antiquewhite;
+  cursor: pointer;
+}
+
+
+
+.box button.transparent-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  opacity: 0.5;
+}
+
+.picture-box .bottom-area {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 10%;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+}
+
+.picture-box .view-count {
+  font-size: 14px;
+  font-weight: bold;
+}
+.picture-box .like-count {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.picture-box .icon-button {
+  border: none;
+  background-color: transparent;
+  font-size: 20px;
+  color: red;
+  margin-left: 5px; /* 여기를 추가하세요 */
+}
+
+.like-info{
+  display: flex;
+  align-items: center;
+}
+
+.like-info div{
+  margin-left: 10px;
+}

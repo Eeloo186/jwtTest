@@ -1,0 +1,67 @@
+<div id="menu-box">
+  <div id="logo-box">
+    <a href="/" id="logo">펫프렌즈</a>
+  </div>
+  <div id="menu-list">
+    <a href="/">홈</a>
+    <a href="/page/notice" class="notice-btn">공지사항 </a>
+    <a href="/page/info" class="info">정보글 </a>
+    <a href="/page/picture" class="picture">사진 </a>
+    <a href="/page/community" clas  s="community">커뮤니티 </a>
+    {% if user %}
+    <div id="mypage-box">
+      <a href="/page/mypage" class="mypage-btn"> 마이페이지 </a>
+    </div>
+    {% if user.rank == '5' %}
+    <div>
+      <a href="/page/admin_post" id="admin-btn"> 관리자페이지</a>
+    </div>
+    {% endif %}
+    {% if user.provider == 'kakao' %}
+    <div id="kakaoLogout-box">
+      <a
+        id="kakaoLogout"
+        href="https://kauth.kakao.com/oauth/logout?client_id={{ kakao }}&logout_redirect_uri=http://localhost:8001/auth/logout"
+        ><img src="/imgs/kakaologout.png" alt="" /> 로그아웃</a
+      >
+    </div>
+    {% else %}
+    <form action="/auth/logout" method="post" id="logout-form">
+      <input type="hidden" name="currUrl" value="">
+      <div id="logout-box">
+        <button type="submit" id="logout-btn">로그아웃</button>
+      </div>
+    </form>
+    <!-- <div id="nomarl-logout">
+      <a id="logout" href="/auth/logout">로그아웃</a>
+    </div> -->
+    {% endif %} {% else %}
+    <form action="/page/login" method="post" id="login-form">
+      <input type="hidden" name="currUrl" value="">
+      <div id="login-box">
+        <button type="submit" id="login-btn">로그인</button>
+      </div>
+    </form>
+    <!-- <div id="login-box">
+      <a href="/page/login" id="login-btn"> 로그인 </a>
+    </div> -->
+    {% endif %}
+  </div>
+</div>
+<div style="width: 100%; height:0px; "></div>
+{% if user %}
+<div class="weather-area">
+  <div class="weather-img">
+    <img src="/imgs/err.png" alt="" />
+  </div>
+  <div class="weather-commu">
+    <span>기온: </span>
+    <input class="temp weather" disabled ></input> °C<br>
+    <span>강수확률: </span>
+    <input class="pop weather" disabled ></input> %
+  </div>
+  <div class="weather-word">
+    <span></span>
+  </div>
+</div>
+{% endif %}

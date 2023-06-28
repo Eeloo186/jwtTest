@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'head.html' %}
+    <link rel="stylesheet" href="/styles/manager.css" />
+    <script src="/javascript/manager.js" defer></script>
+  </head>
+  <body>
+    {% include 'top.html' %}
+    <p class="title">유저 관리</p>
+    <table class="user-box">
+      <thead>
+        <tr>
+          <th>고유번호</th>
+          <th>아이디</th>
+          <th>닉네임</th>
+          <th>작성일</th>
+          <th>가입경로</th>
+          <th>등급</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for user in users %}
+        <form>
+          <tr>
+            <td>
+              <input
+                type="text"
+                class="user-id"
+                value="{{ user.id }}"
+                disabled
+              />
+            </td>
+            <td><input type="text" value="{{user.userId}} " /></td>
+            <td><input type="text" value="{{user.nickname}}" /></td>
+            <td><input type="text" value="{{user.email}}" /></td>
+            <td><input type="text" value="{{user.provider}}" disabled /></td>
+            <td><input type="text" value=" {{ user.rank}}" /></td>
+          </tr>
+        </form>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>

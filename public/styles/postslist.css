@@ -1,0 +1,241 @@
+.zero-box {
+  cursor: pointer;
+  border-bottom: 1px solid rgb(185, 185, 185);
+  width: 70%;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+.first-box {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  padding-bottom: 20px;
+  font-weight: bold;
+}
+
+.first-box div:first-child {
+  font-size: 30px;
+  padding: 10px;
+}
+
+.first-box div:nth-child(2) {
+  font-size: 25px;
+  width: 600px;
+  padding: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.second-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.second-box :nth-child(2) {
+  font-size: 20px;
+}
+
+.third-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  color: rgb(119, 119, 119);
+}
+
+.third-box :first-child {
+  font-size: 22px;
+  padding: 0 20px;
+  margin: 10px;
+  color: rgb(179, 132, 255);
+}
+
+.third-box :nth-child(2) {
+  font-size: 16px;
+  padding: 0px 20px;
+  border-left: 1px solid rgb(192, 192, 192);
+}
+
+.third-box :nth-child(3) {
+  padding: 0 20px;
+}
+
+.sort-btn-list {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+  margin: 0 auto;
+  list-style: none;
+  border: 2px solid rgb(219, 219, 219);
+  border-radius: 12px;
+  margin-bottom: 80px;
+}
+
+.sort-btn {
+  padding: 5px;
+  background-color: white;
+  margin: 0 10px;
+  font-size: 17px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.sort-btn:hover {
+  border-bottom: 1px solid black inset;
+}
+
+.sort-btn-click {
+  font-weight: bold;
+  color: rgb(179, 132, 255);
+}
+
+.search-box {
+  padding-top: 80px;
+  text-align: center;
+}
+
+#searchType {
+  appearance: none;
+  padding: 5px 10px;
+  border-radius: 10px;
+  text-align-last: center;
+  border: 2px solid rgb(185, 185, 185);
+  font-weight: bold;
+  cursor: pointer;
+  color: rgb(83, 83, 83);
+}
+
+#searchQuery {
+  width: 300px;
+  padding: 5px 10px;
+  border-radius: 10px;
+  border: 2px solid rgb(185, 185, 185);
+}
+
+#searchBtn {
+  padding: 8px 20px;
+  border-radius: 10px;
+  text-align-last: center;
+  background-color: rgb(179, 132, 255);
+  color: white;
+  border: none;
+  font-weight: bold;
+}
+
+#pagination {
+  padding: 100px 0;
+  text-align: center;
+}
+
+#pagination button {
+  padding: 5px 13px;
+  border: 2px solid rgb(179, 132, 255);
+  background-color: white;
+  color: rgb(179, 132, 255);
+  font-weight: bold;
+  border-radius: 13px;
+  margin: 3px;
+}
+
+.pageBtn {
+  padding: 5px 13px;
+  background-color: rgb(157, 0, 255) !important;
+  border: 2px solid rgb(179, 132, 255);
+  color: white !important;
+  font-weight: bold;
+  border-radius: 13px;
+}
+
+.sidebar {
+  position: fixed;
+  width: 180px;
+  height: 230px;
+  top: 30%;
+  left: 83%;
+  z-index: 5;
+  transition: all 0.5s ease-in-out;
+  background-color: #ffffff;
+  border: 2px solid #a3a3a3;
+  border-radius: 25px;
+  text-align: center;
+}
+
+#write-form {
+  border-bottom: 2px solid rgb(185, 185, 185);
+}
+
+.btn-primary {
+  background-color: rgb(179, 132, 255);
+  border: none;
+  font-weight: bold;
+  border-radius: 20px;
+  padding: 10px 20px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-primary:hover {
+  background-color: rgb(127, 0, 159);
+}
+
+.sidebar button {
+  margin: 30px 0 20px;
+}
+
+.scroll-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.scrollup,
+.scrolldown {
+  line-height: 44px;
+  background-color: rgb(179, 132, 255);
+  border-radius: 20px;
+  margin: 15px auto 0;
+}
+
+.scrollup a:hover,
+.scrolldown a:hover {
+  background-color: rgb(127, 0, 159);
+  border-radius: 20px;
+}
+
+.scrollup a,
+.scrolldown a {
+  display: block;
+  width: 125px;
+  height: 44px;
+  border: none;
+  font-weight: bold;
+  transition: all 0.2s ease-in-out;
+  color: white;
+  border-radius: 20px;
+}
+
+.fa-heart {
+  color: rgb(179, 132, 255);
+}
+
+i.fa-eye,
+i.fa-comment {
+  padding: 0 !important;
+  color: rgb(119, 119, 119) !important;
+}
+
+.fa-caret-up,
+.fa-caret-down {
+  font-size: 70px;
+  color: black;
+}
+
+.fa-caret-up:hover {
+  font-size: 65px;
+  color: black;
+}
+
+.fa-caret-down:hover {
+  font-size: 65px;
+  color: black;
+}

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{title}}</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" href="/styles/join.css" />
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/javascript/join.js" defer></script>
+  </head>
+  <body>
+    <div id="content-box">
+      <form action="/auth/join" method="post" id="join-form">
+        <ul>
+          <div>
+            <li>
+              <!-- ------------- 이름 --------------- -->
+              <div class="list">
+                <label for="nickname"
+                  >이름 <span class="essential"> * </span></label
+                >
+                <input
+                  type="text"
+                  name="nickname"
+                  id="user-name"
+                  class="input-style"
+                  placeholder="1~10사이"
+                  minlength="2"
+                  maxlength="10"
+                  required
+                />
+              </div>
+              <div id="userNickResult" class="confirm-box"></div>
+            </li>
+            <li>
+              <!-- ------------- 아이디 --------------- -->
+              <div class="list">
+                <label for="userId"
+                  >아이디
+                  <span class="essential"> * </span>
+                </label>
+                <input
+                  type="text"
+                  name="userId"
+                  id="user-id"
+                  class="input-style"
+                  required
+                />
+              </div>
+              <div id="userIdResult" class="confirm-box"></div>
+            </li>
+            <li>
+              <!-- ------------- 비밀번호 --------------- -->
+              <div class="list">
+                <label for="password"
+                  >비밀번호
+                  <span class="essential"> * </span>
+                </label>
+                <input
+                  type="password"
+                  name="password"
+                  id="user-passward"
+                  class="input-style"
+                  placeholder="6~15사이"
+                  minlength="6"
+                  maxlength="15"
+                  required
+                />
+              </div>
+            </li>
+            <li>
+              <!-- ------------- 비밀번호확인 --------------- -->
+              <div class="list">
+                <label for="repassword"
+                  >비밀번호 재확인<span class="essential"> * </span></label
+                >
+                <input
+                  type="password"
+                  name="repassword"
+                  id="user-repassward"
+                  class="input-style"
+                  required
+                />
+              </div>
+            </li>
+          </div>
+          <div>
+            <li>
+              <!-- ------------- 이메일 --------------- -->
+              <div class="list">
+                <label for="email">이메일주소</label>
+                <input
+                  type="text"
+                  name="email"
+                  id="user-email"
+                  class="input-style"
+                  minlength="3"
+                />
+              </div>
+            </li>
+            <li>
+              <!-- ------------- 주소 --------------- -->
+              <div class="list">
+                <label for="address">주소</label>
+                <input
+                  type="button"
+                  onclick="execDaumPostcode()"
+                  class="input-style address-btn"
+                  value="우편번호 찾기"
+                />
+                <input
+                  type="text"
+                  id="postcode"
+                  class="input-style"
+                  name="address1"
+                  placeholder="우편번호"
+                  readonly
+                />
+                <input
+                  type="text"
+                  id="address"
+                  class="input-style"
+                  name="address2"
+                  placeholder="주소"
+                  readonly
+                />
+                <input
+                  type="text"
+                  id="detailAddress"
+                  class="input-style"
+                  name="address3"
+                  placeholder="상세주소"
+                />
+              </div>
+            </li>
+            <li>
+              <!-- ------------- 펫 정보 --------------- -->
+              <div class="list">
+                <label for="pet">펫 정보</label>
+                <input type="radio" id="petYes" name="pet" value="true" /><span
+                  class="petCheck"
+                >
+                  유</span
+                >
+                <input
+                  type="radio"
+                  id="petNo"
+                  name="pet"
+                  value="false"
+                  checked
+                /><span class="petCheck"> 무</span>
+              </div>
+            </li>
+            <li>
+              <div id="pet-information" class="list">
+                <h4>펫 정보</h4>
+                <div>
+                  <ul class="pet-list">
+                    <li>
+                      <label for="petName">이름</label>
+                      <input type="text" name="petName" class="petInput" />
+                    </li>
+                    <li>
+                      <label for="petType">종류</label>
+                      <input type="text" name="petType" class="petInput" />
+                    </li>
+                    <li>
+                      <label for="petKind">품종</label>
+                      <input type="text" name="petKind" class="petInput" />
+                    </li>
+                    <li>
+                      <label for="petAge">나이</label>
+                      <input
+                        type="text"
+                        name="petAge"
+                        class="petInput petAge"
+                      />
+                    </li>
+                    <li>
+                      <label for="petEtc">기타</label>
+                      <textarea
+                        name="petEtc"
+                        id="etc"
+                        cols="40"
+                        rows="10"
+                        class="petInput"
+                      ></textarea>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+          </div>
+        </ul>
+        <div id="join-content">
+          <button id="join-btn" type="submit">회원가입</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

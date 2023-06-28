@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  {% include 'head.html' %}
+  <link rel="stylesheet" href="/styles/admin.css" />
+  <link rel="stylesheet" href="/styles/memberinfo.css" />
+
+</head>
+<body>
+{% include 'top.html' %}
+<title>{{title}}</title>
+
+<div class="container">
+  <header>
+    <h1>관리자 페이지</h1>
+    <hr>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="/page/admin_post">게시글관리</a></li>
+      <li><a href="/page/admin_member">회원관리</a></li>
+      <li><a href="/page/admin_notice">공지사항</a></li>
+    </ul>
+    <hr>
+  </nav>
+  <section>
+    <div id="posts">
+      <h2>게시글 관리</h2>
+      <div class="admin_posts">
+        <input type="text" class="search_posts" placeholder="검색 내용을 입력하세요" required />
+        <button class="post-search-btn">검색</button>
+      </div>
+      <hr>
+
+      <aside>
+        {% for twit in twits %}
+
+        <h3>게시글번호: {{twit.id}} ID: {{twit.User.userId}} 닉네임: {{twit.User.nickname}} 제목: {{twit.title}} 작성일: {{twit.createdAt}}</h3>
+        <button type="button" class="postinfo-btn" data-id="{{twit.id}}">글 정보 보기</button>
+
+
+
+        <div class="popup" id="postinfo-{{twit.id}}">
+          <div class="popup-content">
+            <span class="close">&times;</span>
+            <h2>제목:{{twit.title}}</h2>
+            <p><strong>ID:</strong> {{twit.User.userId}}</p>
+            <p><strong>닉네임:</strong> {{twit.User.nickname}}</p>
+            <hr />
+            <h3><strong>내용:</strong> {{twit.Content.content}}</h3>
+            <hr />
+            <p><strong>조회수:</strong> {{twit.view}}</p>
+            <p><strong>작성일:</strong> {{twit.createdAt}}</p>
+
+            <button type="button" class="admin_post_del" data-id="{{twit.id}}">삭제</button>
+          </div>
+        </div>
+        <hr>
+        {% endfor %}
+      </aside>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; petFriends 게시판. All rights reserved.</p>
+  </footer>
+</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/javascript/admin_post.js" defer></script>
+</html>

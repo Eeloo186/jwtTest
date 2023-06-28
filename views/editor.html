@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'head.html' %}
+    <link rel="stylesheet" href="/styles/editor.css" />
+    <title>{{title}}</title>
+  </head>
+  <body>
+    {% include 'top.html' %}
+    <input id="board-name" name="board-name" type="hidden" value="{{boardName}}" />
+    <input id="content" name="content" type="hidden" data-content="{{content}}" />
+    <input id="post-title" name="post-title" type="hidden" data-posttitle="{{postTitle}}" />
+    <div id="container">
+      <label for="title"> <input id="title" type="text" placeholder="제목을 입력해주세요." /></label>
+      <textarea name="editor" id="editor" rows="10" cols="100"></textarea>
+      <button id="writeBtn">글쓰기</button>
+      <button id="backBtn">돌아가기</button>
+    </div>
+  </body>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="../../CKEditor5/build/ckeditor.js"></script>
+  <script type="text/javascript" defer>
+    // CKEditor5 설정
+    let editor;
+    ClassicEditor.create(document.querySelector("#editor"), {
+      simpleUpload: {
+        uploadUrl: `/posts/img`,
+      },
+    })
+      .then((newEditor) => {
+        editor = newEditor;
+      })
+      .catch((error) => {});
+
+    // 글쓰기 버튼 클릭 처리
+    const writeButton = document.getElementById("writeBtn");
+
+    writeButton.addEventListener("click", () => {
+      const title = document.getElementById("title").value;
+      const boardName = document.getElementById("board-name").value;
+      const content = editor.getData();
+      const postId = "{{postId}}";
+
+      // 유효성 검사 추가
+      if (title == "") {
+        alert("글 제목을 입력하세요");
+      } else if (content == "") {
+        alert("본문 내용이 없습니다");
+      } else {
+        if (confirm("글쓰기를 완료하시겠습니까?")) {
+          const data = {
+            title,
+            content,
+            boardName,
+            postId,
+          };
+
+          if ("{{type}}" == "write") {
+            // 글 작성
+            axios
+              .post(`/boards/${boardName}/posts`, data)
+              .then((res) => {
+                // alert(`/page/${boardName}/${postId}`);
+                // 작성글 정보 db에 등록 완료했으면 원래 있던 곳으로 이동
+                location.href = `/page/${boardName}/${postId}`;
+              })
+              .catch((err) => {
+                console.error(err);
+              });
+          } else {
+            // 글 수정
+            axios
+              .put(`/boards/${boardName}/posts`, data)
+              .then((res) => {
+                // 작성글 정보 db에 등록 완료했으면 원래 있던 곳으로 이동
+                // alert(`/page/${boardName}/${postId}`);
+                location.href = `/page/${boardName}/${postId}`;
+              })
+              .catch((err) => {
+                console.error(err);
+              });
+          }
+        }
+      }
+    });
+
+    // 돌아가기 버튼 클릭
+    // 글 내용 있는지 확인하고 있으면 확인창, 없으면 바로 원래 있던 게시판으로 돌아감
+    const backButton = document.getElementById("backBtn");
+    backButton.addEventListener("click", () => {
+      const title = document.getElementById("title").value;
+      const content = editor.getData();
+      const boardName = document.getElementById("board-name").value;
+      if (title == "" && content == "") {
+        // 작성 내용이 없음
+        location.href = `/page/${boardName}?currentPage=1`;
+      } else {
+        if (confirm("작성중인 내용이 있습니다. 정말 돌아가시겠습니까?")) {
+          location.href = `/page/${boardName}?currentPage=1`;
+        }
+      }
+    });
+
+    // window.onload = () => {
+    document.addEventListener("DOMContentLoaded", () => {
+      const title = document.getElementById("title");
+      const content = document.getElementById("content");
+      const postTitle = document.getElementById("post-title");
+      title.value = postTitle.dataset.posttitle;
+      editor.setData(content.dataset.content);
+    });
+  </script>
+</html>

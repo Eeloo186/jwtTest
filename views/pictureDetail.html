@@ -1,0 +1,384 @@
+<!-- 페이지 이름 postDetail.html로 수정하기 -->
+<!-- 대댓글 구분은? 부모 댓글이 있냐 없냐로 판별하기 -->
+<!-- 만약 댓글이 대댓글이라면 앞에 └ 표시와 공백 강제로 표시하기 -->
+<!-- 댓글창 삐져나가는 문제 해결. div.textContent 대신에 textarea 같은거 추가? -->
+
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    {% include 'head.html' %}
+    <link rel="stylesheet" href="/styles/pictureDetail.css" />
+    <script src="/javascript/postDetail.js" defer></script>
+  </head>
+  <body>
+    {% include 'top.html' %}
+    <div style="height: 100px"></div>
+    <input type="hidden" id="postId" name="postId" value="{{ postId }}" />
+    <input type="hidden" id="userId" name="userId" value="{{ user.id }}" />
+    <input type="hidden" id="boardName" name="boardName" value="{{ boardName }}" />
+    <input type="hidden" id="content-html" value="{{twit.Content.content}}" />
+    <div id="post-details-area">
+      <!-- 본문구역 시작 -->
+      <div id="post-info-area">
+        <div style="width: 100%">
+          <div class="post-title-box">
+            <div id="post-title">{{twit.title}}</div>
+            {% if twit.User.id == user.id %}
+            <div>
+              <button id="post-edit-btn">게시글 수정</button>
+              <button id="post-delete-btn">게시글 삭제</button>
+            </div>
+            {% endif %}
+          </div>
+          <div id="post-meta-area">
+            <div>
+              <span>{{twit.User.nickname}}</span>
+              <span><i class="fas fa-eye"></i> {{twit.view}}</span>
+            </div>
+            <span>작성일 : {{twit.createdAt}}</span>
+          </div>
+        </div>
+        <div id="post-content-area">
+            <img src="{{twit.imgUrl}}" id="img" />
+          <div id="post-content"></div>
+        </div>
+      </div>
+      <div id="button-container">
+        <div>
+          {% if user and not likedPostList.includes(twit.id) %}
+          <button id="like-btn"><i class="far fa-heart"></i></button>
+          <span>{{likeCount}}</span>
+          {% elif user and likedPostList.includes(twit.id) %}
+          <button id="unlike-btn">
+            <i class="fa fa-heart"></i>
+          </button>
+          <span>{{likeCount}}</span>
+          {% else %}
+          <button disabled id="unlike-btn"><i class="fa fa-heart"></i></button>
+          <span>{{likeCount}}</span>
+          {% endif %}
+        </div>
+        <div>
+          <button id="comment-btn"><i class="far fa-comment"></i></button>
+          <span>{{comment}}</span>
+        </div>
+      </div>
+      <!-- 본문구역 끝 -->
+      <!-- 댓글 구역 시작 -->
+      <div id="comments-area">
+        <!-- 지금과 같이 완전히 안보이게 하는방식과 textarea와 댓글등록을 잠그고 -->
+        <!-- '로그인한 유저만 댓글을 쓰실 수 있습니다' 표기중 선택 -->
+        {% if user %}
+        <div id="comments-write-area">
+          <textarea name="comment-textarea" id="comment-textarea"></textarea>
+          <button type="submit" id="comment-submit-btn">등록</button>
+        </div>
+        {% endif %}
+        <hr />
+        <div id="comments-view-area">
+          {% for comment in comments %}
+          <div class="comment-container">
+            <div class="comment-meta-area">
+              <input type="hidden" class="commentId" name="commentId" value="{{ comment.id }}" />
+              <span>{{comment.User.userId}}</span>
+              <span>{{comment.createdAt}}</span>
+              {% if comment.User.id == user.id %}
+              <button class="comment-delete-btn">삭제</button>
+              {% endif %}
+            </div>
+            <div class="comment-content-area">{{comment.content}}</div>
+            <input type="hidden" class="comment-content-html" value="{{comment.content}}" />
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      <!-- 댓글 구역 끝 -->
+    </div>
+    <!-- footer include -->
+  </body>
+  <script>
+    const postId = document.getElementById("postId").value;
+    const userId = document.getElementById("userId").value;
+
+    if (userId) {
+      const delBtns = document.getElementsByClassName("comment-delete-btn");
+      // delBtns.forEach((delBtn) => {
+      for (const delBtn of delBtns) {
+        delBtn.addEventListener("click", async (ev) => {
+          // 선택한 삭제 버튼의 부모의 자식중 commentId에서 comment.id를 추출해서 삭제 요청 보냄
+          const commentId = ev.target.parentNode.querySelector(".commentId");
+          await axios
+            .delete(`/posts/${postId}/comments/${commentId.value}`)
+            .then((res) => {
+              // db에서 삭제 됐으면 누른 삭제버튼을 포함하는 DOM 객체도 삭제함
+              console.log(`${res.data.postId}게시글의 ${res.data.commentId}댓글 ${res.data.message}`);
+              ev.target.parentNode.parentNode.remove();
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        });
+      }
+
+      // 댓글 등록 후 처리
+      // 필요정보를 취합해서 post 요청 보내서 db에 등록하고
+      // 다시 리턴받아서 동적으로 요소 생성하고 append
+      // 삭제 버튼에 click 이벤트 처리 추가
+      const commentSubmitBtn = document.getElementById("comment-submit-btn");
+      const comment = document.getElementById("comment-textarea");
+      // 댓글 등록하면 해당 댓글을 동적으로 추가해서 표시해준다
+      commentSubmitBtn.addEventListener("click", () => {
+        // 입력한 모양 그대로 출력 해주기 위해서 개행문자는 <br>태그로 바꿔서 저장
+        const commentData = {
+          commentContent: comment.value.replace(/\n/g, "<br>"),
+          userId,
+        };
+        // 빈 댓글이 아닐 때만 댓글 등록 가능
+        if (comment.value.trim() !== "") {
+          comment.value = "";
+          axios
+            .post(`/posts/${postId}/comments`, commentData)
+            .then((res) => {
+              const comment = res.data;
+              const commentsViewArea = document.getElementById("comments-view-area");
+
+              // 기존 댓글에 방금 추가한 댓글을 추가한다.
+              // 동적으로 생성해서 추가해준다.
+              const commentContainer = document.createElement("div");
+              commentContainer.setAttribute("class", "comment-container");
+              const commentMetaArea = document.createElement("div");
+              commentMetaArea.setAttribute("class", "comment-meta-area");
+              const commentId = document.createElement("input");
+              commentId.setAttribute("type", "hidden");
+              commentId.setAttribute("class", "commentId");
+              commentId.setAttribute("name", "commentId");
+              commentId.setAttribute("value", comment.id);
+              //title
+              const userIdSpan = document.createElement("span");
+              userIdSpan.textContent = comment.User.userId;
+              const createdAtSpan = document.createElement("span");
+              createdAtSpan.textContent = comment.createdAt;
+              commentMetaArea.appendChild(commentId);
+              commentMetaArea.appendChild(userIdSpan);
+              commentMetaArea.appendChild(createdAtSpan);
+              const commentContentArea = document.createElement("div");
+              commentContentArea.setAttribute("class", "comment-content-area");
+              commentContentArea.innerHTML = comment.content;
+              commentContainer.appendChild(commentMetaArea);
+              commentContainer.appendChild(commentContentArea);
+              commentsViewArea.appendChild(commentContainer);
+              if (comment.User.id == userId) {
+                const commentDeleteBtn = document.createElement("button");
+                commentDeleteBtn.setAttribute("class", "comment-delete-btn");
+                commentDeleteBtn.textContent = "삭제";
+                commentMetaArea.appendChild(commentDeleteBtn);
+                commentDeleteBtn.addEventListener("click", async (ev) => {
+                  // 선택한 삭제 버튼의 부모의 자식중 commentId에서 comment.id를 추출해서 삭제 요청 보냄
+                  const commentId = ev.target.parentNode.querySelector(".commentId");
+                  await axios
+                    .delete(`/posts/${postId}/comments/${commentId.value}`)
+                    .then((res) => {
+                      // db에서 삭제 됐으면 누른 삭제버튼을 포함하는 DOM 객체도 삭제함
+                      console.log(`${res.data.postId}게시글의 ${res.data.commentId}댓글 ${res.data.message}`);
+                      ev.target.parentNode.parentNode.remove();
+                    })
+                    .catch((err) => {
+                      console.error(err);
+                    });
+                });
+              }
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        } else {
+          alert("댓글 내용이 없습니다.");
+        }
+      });
+    }
+    /////////////////
+    // 게시글 수정 //
+    /////////////////
+    if (document.getElementById("post-edit-btn")) {
+      const editPostBtn = document.getElementById("post-edit-btn");
+      editPostBtn.addEventListener("click", () => {
+        const boardName = document.getElementById("boardName");
+
+        // boardName, postId 정보담아 GET 요청을 보낸다
+        window.location.href = `/page/editor/?board-name=${boardName.value}&postId=${postId}`;
+      });
+    }
+    /////////////////
+    // 게시글 삭제 //
+    /////////////////
+    if (document.getElementById("post-delete-btn")) {
+      const deletePostBtn = document.getElementById("post-delete-btn");
+      deletePostBtn.addEventListener("click", () => {
+        const confirmed = confirm("정말 게시글을 삭제하시겠습니까?");
+        if (confirmed) {
+          axios
+            .delete(`/boards/{{boardName}}/posts/{{postId}}`)
+            .then((res) => {
+              window.location.href = `/page/${res.data.boardName}?currentPage=1`;
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        }
+      });
+    }
+
+    const likeBtn = document.getElementById("like-btn");
+    const unlikeBtn = document.getElementById("unlike-btn");
+    console.log(likeBtn, unlikeBtn);
+    if (likeBtn) {
+      // likeBtn이 존재한다 = 추천버튼이 존재한다 = 추천 작업 등록
+      /////////////////
+      // 게시글 추천 //
+      /////////////////
+      likeBtn.addEventListener("click", () => {
+        const confirmed = confirm("이 게시글을 추천하시겠습니까?");
+        if (confirmed) {
+          const data = {
+            userId: "{{user.id}}",
+            postId: "{{postId}}",
+          };
+          axios
+            .post("/posts/{{postId}}/likes", data)
+            .then((res) => {
+              console.log(`${res.data.UserId}유저가 ${res.data.PostId}게시글을 추천하셨습니다`);
+              location.reload();
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        }
+      });
+    } else if (unlikeBtn) {
+      // unlikeBtn이 존재한다 = 추천해제버튼이 존재한다 = 추천해제 작업 등록
+      /////////////////////
+      // 게시글 추천해제 //
+      /////////////////////
+      unlikeBtn.addEventListener("click", () => {
+        const confirmed = confirm("이 게시글의 추천을 취소하시겠습니까?");
+        if (confirmed) {
+          axios
+            .delete("/posts/{{postId}}/likes")
+            .then((res) => {
+              console.log(`${res.data.UserId}유저가 ${res.data.PostId}게시글을 추천해제 하셨습니다`);
+              location.reload();
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        }
+      });
+    }
+  </script>
+  <script>
+    // 본문 로딩
+    window.addEventListener("DOMContentLoaded", () => {
+      const contentHTML = document.getElementById("content-html");
+      const postContent = document.querySelector("#post-content");
+      const postPicture = document.querySelector('#post-picture');
+      postContent.innerHTML = contentHTML.value;
+ 
+
+      // 댓글 HTML 처리
+      console.log("시작");
+      const commentContentArea = document.querySelectorAll(".comment-content-area");
+      const commentContentHTML = document.querySelectorAll(".comment-content-html");
+      for (let i = 0; i < commentContentArea.length; i++) {
+        commentContentArea[i].innerHTML = commentContentHTML[i].value;
+      }
+    });
+  </script>
+</html>
+
+<!-- 백업  -->
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<style>
+    h1 {
+        margin-bottom: 0;
+    }
+    h2 {
+        margin-top: 0;
+    }
+    .date {
+        color: gray;
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+    .content {
+        line-height: 1.5;
+        margin-bottom: 30px;
+    }
+</style>
+<body>
+</div>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-sm-12">
+            <h2>제  목{{twits.title}}</h2>
+            <h5>작성자{{twits.User.nickname}}, Dec-07-2020, 조회수 00</h5>
+            <div class="fakeimg">내 용{{twits.Content.content}}</div>
+            <p>댓 글 ...</p>
+            <a href="/page/community?currentPage=1"><button type="button" class="btn btn-primary">like</button></a>
+            <a href="/page/community?currentPage=1"><button type="button" class="btn btn-primary justify-content-end">목 록</button></a>
+        </div>
+    </div>
+</div>
+</body>
+
+<script>
+    if (document.getElementById('img')) {
+        document.getElementById('img').addEventListener('change', function(e) {
+            const formData = new FormData();
+            formData.append('img', this.files[0]);
+            console.log('-------');
+            for ( let key of formData.keys()) {
+                console.log(key, ":", formData.get(key));
+            }
+            console.log('-------');
+            axios.post('/post/img', formData)
+                .then((res) => {
+                    document.getElementById('img-url').value = res.data.url;
+                    document.getElementById('img-preview').src = res.data.url;
+                    document.getElementById('img-preview').style.display = 'inline';
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        });
+    }
+    document.querySelectorAll('.twit-follow').forEach(function(tag) {
+        tag.addEventListener('click', function() {
+            const myId = document.querySelector('#my-id');
+            if (myId) {
+                const userId = tag.parentNode.querySelector('.twit-user-id').value;
+                if (userId !== myId.value) {
+                    if (confirm('팔로잉하시겠습니까?')) {
+                        axios.post(`/user/${userId}/follow`)
+                            .then(() => {
+                                location.reload();
+                            })
+                            .catch((err) => {
+                                console.error(err);
+                            });
+                    }
+                }
+            }
+        });
+    });
+</script>
+</html>
+
+
+
+
+ -->

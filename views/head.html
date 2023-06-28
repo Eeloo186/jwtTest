@@ -1,0 +1,69 @@
+<meta charset="UTF-8" />
+<title>{{title}}</title>
+<meta name="viewport" content="width=device-width, user-scalable=no" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<link rel="stylesheet" href="/styles/top.css" />
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+/>
+<script src="/javascript/top.js" defer></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+  crossorigin="anonymous"
+></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+  window.addEventListener("DOMContentLoaded", async () => {
+    console.log("top.html 로딩 완료");
+    if ("{{user}}") {
+      await axios
+        .get("/api/weather/{{user.id}}")
+        .then((res) => {
+          console.log(res.data);
+          const temp = document.querySelector(".temp");
+          const pop = document.querySelector(".pop");
+          temp.value = res.data.temp;
+          pop.value = res.data.pop;
+          const weatherImg = document.querySelector(".weather-img img");
+          const weatherComu = document.querySelector(".weather-commu");
+          if (pop.value !== null) {
+            setTimeout(() => {
+              weatherComu.style.opacity = 1;
+              if (pop.value <= 30) {
+                weatherImg.src = "/imgs/sunny.png";
+              } else if (pop.value >= 60) {
+                weatherImg.src = "/imgs/rain.png";
+              } else {
+                weatherImg.src = "/imgs/soso.png";
+              }
+            }, 500);
+          }
+
+          const weatherWord = document.querySelector(".weather-word span");
+          setTimeout(() => {
+            if (pop.value > 60 && temp.value < 18) {
+              weatherWord.textContent = "쌀쌀한 날씨에 비가 올 수 있어요!";
+            } else if (pop.value >= 30 && temp.value >= 25) {
+              weatherWord.textContent = "밖에 나가면 녹아버릴거에요 ㅜ.ㅜ";
+            } else if (pop.value >= 60) {
+              weatherWord.textContent =
+                "비가 올 확률이 높아요. 나갈 때 우산챙기세요.";
+            } else {
+              weatherWord.textContent = "산책하기 좋은 날씨인거 같아요! ^.^";
+            }
+          }, 500);
+        })
+        .catch((err) => {
+          console.log("에러 발생");
+          console.error(err);
+        });
+    }
+  });
+</script>

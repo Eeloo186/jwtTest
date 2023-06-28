@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    {% include 'head.html' %}
+    <link rel="stylesheet" href="/styles/postslist.css" />
+    <link rel="stylesheet" href="/styles/picture.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  </head>
+  <body>
+    {% include 'top.html' %}
+    <input type="hidden" name="userId" value="{{user.id}}" />
+    <input type="hidden" name="boardName" value="{{boardName}}" />
+    <input type="hidden" name="likedPostList" value="{{likedPostList}}" />
+    <h1 style="text-align: center">사진 페이지</h1>
+    <ul class="sort-btn-list">
+      <li><div class="sort-btn newest sort-btn-click">최신 순</div></li>
+      <li><div class="sort-btn old">오래된 순</div></li>
+      <li><div class="sort-btn highView">높은 조회수</div></li>
+      <li><div class="sort-btn rowView">낮은 조회수</div></li>
+    </ul>
+    <br />
+    <!--  -->
+    <!-- title, posts, boardName, offset -->
+    <div class="container">
+      <!-- test -->
+      <!-- 동적으로 생성되는 div 요소들 -->
+      {% for post in posts%}
+      <div class="picture-box">
+        <input type="hidden" name="imgUrl" value="{{post.imgUrl}}" />
+        <input type="hidden" name="postId" value="{{post.id}}" />
+        <!-- <button class="transparent-button">버튼</button> -->
+        <div class="bottom-area">
+          <div class="view-count">조회수 : {{post.view}}</div>
+          <button class="icon-button"><i class="fa fa-heart"></i></button>
+          <div class="like-count"></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <!--  -->
+    <div class="sidebar">
+      <form action="/page/pictureEditor" id="write-form" method="get">
+        <input
+          type="hidden"
+          id="board-name"
+          name="board-name"
+          value="{{ boardName }}"
+        />
+        <button type="submit" class="btn btn-primary">글쓰기 버튼</button>
+      </form>
+      <div class="scroll-box">
+        <div class="scrollup">
+          <a href="#">TOP</a>
+        </div>
+        <div class="scrolldown">
+          <a href="#pagination">BOTTOM</a>
+        </div>
+      </div>
+    </div>
+    <!-- {% include 'footer.html' %} -->
+  </body>
+  <script src="/javascript/picture.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+  <script>
+    console.log(`user : {{user.id}}`);
+    const highView = document.querySelector(".highView");
+    const rowView = document.querySelector(".rowView");
+    const newest = document.querySelector(".newest");
+    const old = document.querySelector(".old");
+    const likedPostList = document.querySelector(
+      'input[name="likedPostList"]'
+    ).value;
+
+    // 페이지 첫 진입 때는 최신순 정렬로 초기화
+    let changeNumberSort = "newest";
+    listSort();
+
+    // 정렬 버튼 클릭 이벤트에 handleSortBtnClick 함수를 전달
+    highView.addEventListener("click", () =>
+      handleSortBtnClick(highView, "highView")
+    );
+    rowView.addEventListener("click", () =>
+      handleSortBtnClick(rowView, "rowView")
+    );
+    newest.addEventListener("click", () =>
+      handleSortBtnClick(newest, "newest")
+    );
+    old.addEventListener("click", () => handleSortBtnClick(old, "old"));
+    // 정렬 버튼 누르면 css 변경 & listSort 호출로 axios요청
+    const sortBtns = document.querySelectorAll(".sort-btn");
+    function handleSortBtnClick(clickedBtn, sortType) {
+      if (clickedBtn.classList.contains("sort-btn-click")) {
+        clickedBtn.classList.remove("sort-btn-click");
+      } else {
+        clickedBtn.classList.add("sort-btn-click");
+        changeNumberSort = sortType;
+        sortBtns.forEach((otherBtn) => {
+          if (otherBtn !== clickedBtn) {
+            // 다른버튼 !== 클릭한버튼
+            otherBtn.classList.remove("sort-btn-click");
+          }
+        });
+      }
+      listSort();
+    }
+
+    // 정렬된 게시물 요청&반환 함수
+    function listSort() {
+      axios
+        .get(
+          `/boards/{{boardName}}/posts?sortType=${changeNumberSort}&picCount=0&reqPostCount=8`
+        )
+        .then((response) => {
+          const posts = response.data;
+          const picContainer = document.querySelector(".container");
+          picContainer.innerHTML = "";
+          posts.forEach((post) => {
+            const pictureBox = document.createElement("div");
+            pictureBox.setAttribute("class", "picture-box");
+            pictureBox.innerHTML = `
+                <input type="hidden" name="imgUrl" value="${post.imgUrl}" />
+                <input type="hidden" name="postId" value="${post.id}" />
+                <div class="bottom-area">
+                  <div class="view-count">조회수 : ${post.view}</div>
+                  <div class='like-info'>
+                    <button class="icon-button"><i class="fa fa-heart"></i></button>
+                    <div class="like-count">${post.likeCount}</div>
+                  </div>
+                </div>
+              `;
+            console.log(`pictureBox ${post.id} 추가`);
+            pictureBox.style.backgroundImage = `url('${post.imgUrl}')`;
+            pictureBox.addEventListener("click", () => {
+              window.location.href = `/page/{{boardName}}/${post.id}`;
+            });
+            picContainer.appendChild(pictureBox);
+            const likeBtn = pictureBox.querySelector(".icon-button");
+            likeBtn.addEventListener(
+              "click",
+              (ev) => {
+                ev.stopPropagation();
+                if ("{{user.id}}") {
+                  const confirmed = confirm("이 게시글을 추천하시겠습니까?");
+                  if (confirmed) {
+                    const postId = pictureBox.querySelector(
+                      'input[name="postId"]'
+                    ).value;
+                    // 추천 내역 없음
+                    if (!likedPostList.includes(postId)) {
+                      const data = {
+                        userId: "{{user.id}}",
+                        postId: `${postId}`,
+                      };
+                      console.log(data.userId, data.postId);
+                      axios
+                        .post(`/posts/${postId}/likes`, data)
+                        .then((res) => {
+                          // console.log(`${res.data.UserId}유저가 ${res.data.PostId}게시글을 추천하셨습니다`);
+                          location.reload();
+                        })
+                        .catch((err) => {
+                          console.error(err);
+                        });
+                    } else {
+                      // 이미 추천 했음
+                      customAlert(
+                        "해당 게시글은 이미 추천하셨습니다",
+                        "info",
+                        2000
+                      );
+                    }
+                  }
+                } else {
+                  // 로그인 안한 상태에서 추천 누를 경우
+                  // alert("로그인 하셔야 추천하실 수 있습니다");
+                  customAlert(
+                    "로그인하셔야 추천하실 수 있습니다",
+                    "error",
+                    2000
+                  );
+                }
+              },
+              true
+            );
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+
+    function customAlert(title, icon, timer) {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top",
+        showConfirmButton: false,
+        timer: timer,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        },
+      });
+
+      Toast.fire({
+        icon: icon,
+        title: title,
+      });
+    }
+  </script>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- // title, content, boardName, postId // imgUrl 필수 -->
+
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{title}}</title>
+    <style>
+      #container {
+        max-width: 60%;
+        margin: 0 auto;
+        position: relative;
+      }
+
+      #content-textarea {
+        width: 100%;
+        max-width: 100%;
+        height: 100px;
+        box-sizing: border-box;
+        resize: none;
+      }
+
+      #btn-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: center;
+      }
+
+      .custom-file-upload {
+        display: inline-block;
+        padding: 6px 12px;
+        cursor: pointer;
+        background-color: #4caf50;
+        color: #fff;
+        border-radius: 5px;
+        font-size: 16px;
+        text-align: left;
+      }
+
+      #write-button, #backBtn {
+        display: inline-block;
+        padding: 6px 12px;
+        cursor: pointer;
+        background-color: #4caf50;
+        color: #fff;
+        border-radius: 5px;
+        border: none;
+        font-size: 16px;
+        text-align: right;
+      }
+
+      #img-upload {
+        display: none;
+      }
+
+      #preview-container {
+        width: 100%;
+        height: auto;
+        overflow: hidden;
+      }
+
+      #preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      #preview {
+        max-width: 100%;
+        max-height: 100%;
+        background-repeat: no-repeat;
+      }
+      /* #img {
+  opacity: 0;
+  position: absolute;
+  z-index: -1;
+}
+#img-label {
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+  background-color: #4caf50;
+  color: #fff;
+  border-radius: 5px;
+  font-size: 16px;
+  text-align: left;
+} */
+    </style>
+  </head>
+  <body>
+    <input id="board-name" name="board-name" type="hidden" value="{{boardName}}" />
+    <input id="content" name="content" type="hidden" data-content="{{content}}" />
+    <input id="post-title" name="post-title" type="hidden" data-posttitle="{{postTitle}}" />
+    <div id="container">
+      <textarea name="content" id="content-textarea"></textarea>
+      <div id="btn-container">
+        <div>
+          <label for="img-upload" class="custom-file-upload">사진 업로드</label>
+          <input id="img-upload" type="file" accept="image/*" />
+          <!-- <label for="img-upload" class="custom-file-upload">사진 업로드</label>
+          <input id="img-upload" type="file" accept="image/*" onchange="previewFile()" /> -->
+          <button id="write-button">글쓰기</button>
+          <button id="backBtn">돌아가기</button>
+        </div>
+      </div>
+      <div id="preview-container">
+        <div id="preview"></div>
+      </div>
+    </div>
+
+    <!-- <div id="container">
+      <h1>사진 에디터 페이지</h1>
+      <label for="title">글제목 <input id="title" type="text" style="width: 549px" /></label>
+      <textarea name="editor" id="editor" rows="10" cols="100"></textarea>
+      <button id="writeBtn">글쓰기</button>
+      <button id="backBtn">돌아가기</button>
+    </div> -->
+  </body>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script type="text/javascript">
+    // 이미지 업로드 버튼
+    const imageUploadBtn = document.getElementById("img-upload");
+    imageUploadBtn.addEventListener("change", function (e) {
+      const preview = document.getElementById("preview");
+      const file = this.files[0];
+      const reader = new FileReader();
+      const img = new Image();
+
+      // 미리 보기 표시
+      reader.addEventListener("load", function () {
+        img.src = reader.result;
+      });
+      if (file) {
+        reader.readAsDataURL(file);
+        preview.innerHTML = "";
+        preview.appendChild(img);
+      }
+    });
+
+    // 글쓰기 버튼 클릭 처리
+    const writeButton = document.getElementById("write-button");
+    writeButton.addEventListener("click", () => {
+      const title = "";
+      const boardName = document.getElementById("board-name").value;
+      const content = document.getElementById("content-textarea").value;
+      const postId = "{{postId}}";
+
+      // 유효성 검사 추가
+      if (!document.querySelector("input[type=file]").files[0]) {
+        alert("사진을 업로드 해주세요");
+      } else if (content == "") {
+        alert("본문 내용이 없습니다");
+      } else {
+        if (confirm("글쓰기를 완료하시겠습니까?")) {
+          // 이미지 업로드
+          const formData = new FormData();
+          formData.append("img", document.querySelector("input[type=file]").files[0]);
+          axios
+            .post("/posts/img", formData)
+            .then((res) => {
+              const data = {
+                title,
+                content,
+                boardName,
+                postId,
+                imgUrl: res.data.url,
+              };
+              console.log(data);
+              if ("{{type}}" == "write") {
+                return axios.post(`/boards/${boardName}/posts`, data);
+              } else {
+                return axios.put(`/boards/${boardName}/posts`, data);
+              }
+            })
+            .then((res) => {
+              // 작성글 정보 db에 등록 완료했으면 원래 있던 곳으로 이동
+              location.href = `/page/${boardName}`;
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        }
+      }
+    });
+
+    // 돌아가기 버튼 클릭
+    // 글 내용 있는지 확인하고 있으면 확인창, 없으면 바로 원래 있던 게시판으로 돌아감
+    const backButton = document.getElementById("backBtn");
+    backButton.addEventListener("click", () => {
+      const content = document.getElementById("content-textarea").value;
+      const title = "";
+      const boardName = document.getElementById("board-name").value;
+      console.log(document.querySelector("input[type=file]").files[0]);
+      if (content == "" && document.querySelector("input[type=file]").files[0] == undefined) {
+        // 작성 내용이 없음
+        location.href = `/page/${boardName}?currentPage=1`;
+      } else {
+        if (confirm("작성중인 내용이 있습니다. 정말 돌아가시겠습니까?")) {
+          location.href = `/page/${boardName}?currentPage=1`;
+        }
+      }
+    });
+
+
+
+    // 글 수정시 초기화 해주는 부분
+    // 사진 게시판이므로 사진 데이터도 추가해야함
+    window.onload = () => {
+      const content = document.getElementById("content");
+      const postTitle = document.getElementById("post-title");
+    //  본문 editor.setData(content.dataset.content);
+    };
+  </script>
+</html>

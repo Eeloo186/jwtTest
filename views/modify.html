@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{title}}</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" href="/styles/join.css" />
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/javascript/join.js" defer></script>
+  </head>
+  <body>
+    <div id="content-box">
+      <form action="/users/:id" method="post" id="join-form">
+        <input type="hidden" name="id" value="{{user.id}}">
+        <ul>
+          <div>
+            <li>
+              <!-- ------------- 이름 --------------- -->
+              <div class="list">
+                <label for="nickname"
+                  >이름 <span class="essential"> * </span></label
+                >
+                <input
+                  type="text"
+                  name="nickname"
+                  id="user-name"
+                  class="input-style"
+                  placeholder="1~10사이"
+                  minlength="2"
+                  maxlength="10"
+                  value="{{user.nickname}}"
+                  required
+                />
+              </div>
+              <input type="hidden" class="hiddenNick" value="{{user.nickname}}">
+              <div id="userNickResult" class="confirm-box"></div>
+            </li>
+            <li>
+              <!-- ------------- 아이디 --------------- -->
+              <div class="list">
+                <label for="userId"
+                  >아이디
+                  <span class="essential"> * </span>
+                </label>
+                <input
+                  type="text"
+                  name="userId"
+                  id="user-id"
+                  class="input-style"
+                  value="{{user.userId}}"
+                  required
+                />
+              </div>
+              <input type="hidden" class="hiddenId" value="{{user.userId}}">
+              <div id="userIdResult" class="confirm-box"></div>
+          <div>
+            <li>
+              <!-- ------------- 이메일 --------------- -->
+              <div class="list">
+                <label for="email">이메일주소</label>
+                <input
+                  type="text"
+                  name="email"
+                  id="user-email"
+                  class="input-style"
+                  value="{{user.email}}"
+                />
+              </div>
+            </li>
+            <li>
+              <!-- ------------- 주소 --------------- -->
+              <div class="list">
+                <label for="address">주소</label>
+                <input
+                  type="button"
+                  onclick="execDaumPostcode()"
+                  class="input-style address-btn"
+                  value="우편번호 찾기"
+                />
+                <input
+                  type="text"
+                  id="postcode"
+                  class="input-style"
+                  name="address1"
+                  placeholder="우편번호"
+                  value="{{user.address1}}"
+                  readonly
+                />
+                <input
+                  type="text"
+                  id="address"
+                  class="input-style"
+                  name="address2"
+                  placeholder="주소"
+                  value="{{user.address2}}"
+                  readonly
+                />
+                <input
+                  type="text"
+                  id="detailAddress"
+                  class="input-style"
+                  name="address3"
+                  placeholder="상세주소"
+                  value="{{user.address3}}"
+                />
+              </div>
+            </li>
+            <li>
+              <div class="list">
+                <!-- ------------- 펫 정보 --------------- -->
+                <label for="pet">펫 정보</label>
+                <input type="radio" id="petYes" name="pet" value="true" /><span
+                  class="petCheck"
+                >
+                  유</span
+                >
+                <input
+                  type="radio"
+                  id="petNo"
+                  name="pet"
+                  value="false"
+                  checked
+                /><span class="petCheck"> 무</span>
+              </div>
+            </li>
+            <li>
+              <div id="pet-information" class="list">
+                <h4>펫 정보</h4>
+                <div>
+                  <ul class="pet-list">
+                    <li>
+                      <label for="petName">이름</label>
+                      <input type="text" name="petName" class="petInput" />
+                    </li>
+                    <li>
+                      <label for="petType">종류</label>
+                      <input type="text" name="petType" class="petInput" />
+                    </li>
+                    <li>
+                      <label for="petKind">품종</label>
+                      <input type="text" name="petKind" class="petInput" />
+                    </li>
+                    <li>
+                      <label for="petAge">나이</label>
+                      <input
+                        type="text"
+                        name="petAge"
+                        class="petInput petAge"
+                      />
+                    </li>
+                    <li>
+                      <label for="petEtc">기타</label>
+                      <textarea
+                        name="petEtc"
+                        id="etc"
+                        cols="40"
+                        rows="10"
+                        class="petInput"
+                      ></textarea>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+          </div>
+        </ul>
+        <div id="join-content">
+          <button id="join-btn" type="submit">수정</button>
+        </div>
+      </form>
+    </div>
+  </body>
+  <script></script>
+</html>
